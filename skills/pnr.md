@@ -89,13 +89,21 @@ The block below is what the app executes. Editing it — sources, steps,
 field patterns, coach orders — changes the skill with no app update. The
 view template is `pnr.view.html` in this same folder.
 
+
+Live note (2026-10-28): the official site shows a CAPTCHA after submit, so automated extraction cannot use it; live data currently comes from RailYatri, whose layout the patterns above match.
+
 ```skill-json
 {
   "id": "pnr",
   "title": "PNR Status",
   "refreshHours": 6,
   "inputs": [
-    {"key": "pnr", "label": "PNR number", "pattern": "^[0-9]{10}$", "hint": "10-digit PNR from your ticket"}
+    {
+      "key": "pnr",
+      "label": "PNR number",
+      "pattern": "^[0-9]{10}$",
+      "hint": "10-digit PNR from your ticket"
+    }
   ],
   "sources": [
     {
@@ -103,10 +111,21 @@ view template is `pnr.view.html` in this same folder.
       "name": "Indian Railways (official)",
       "url": "https://www.indianrail.gov.in/enquiry/PNR/PnrEnquiry.html",
       "steps": [
-        {"action": "fill", "label": "pnr", "value": "{pnr}"},
-        {"action": "submit"},
-        {"action": "wait", "delayMs": 6000},
-        {"action": "extract"}
+        {
+          "action": "fill",
+          "label": "pnr",
+          "value": "{pnr}"
+        },
+        {
+          "action": "submit"
+        },
+        {
+          "action": "wait",
+          "delayMs": 6000
+        },
+        {
+          "action": "extract"
+        }
       ]
     },
     {
@@ -114,33 +133,169 @@ view template is `pnr.view.html` in this same folder.
       "name": "RailYatri",
       "url": "https://www.railyatri.in/pnr-status",
       "steps": [
-        {"action": "fill", "label": "pnr", "value": "{pnr}"},
-        {"action": "submit"},
-        {"action": "wait", "delayMs": 6000},
-        {"action": "extract"}
+        {
+          "action": "fill",
+          "label": "pnr",
+          "value": "{pnr}"
+        },
+        {
+          "action": "submit"
+        },
+        {
+          "action": "wait",
+          "delayMs": 6000
+        },
+        {
+          "action": "extract"
+        }
       ]
     }
   ],
   "fields": [
-    {"key": "trainNumber", "label": "Train number", "required": true, "patterns": ["\\b(\\d{5})\\s+[A-Z][A-Za-z ]+?\\s+\\d{2}-\\d{2}-\\d{4}"]},
-    {"key": "trainName", "label": "Train name", "required": true, "patterns": ["\\b\\d{5}\\s+([A-Z][A-Za-z ]+?)\\s+\\d{2}-\\d{2}-\\d{4}"]},
-    {"key": "journeyDate", "label": "Journey date", "required": true, "patterns": ["\\b\\d{5}\\s+[A-Z][A-Za-z ]+?\\s+(\\d{2}-\\d{2}-\\d{4})"]},
-    {"key": "fromStation", "label": "From", "patterns": ["\\d{2}-\\d{2}-\\d{4}\\s+([A-Z]{2,5})\\s+[A-Z]{2,5}"]},
-    {"key": "toStation", "label": "To", "patterns": ["\\d{2}-\\d{2}-\\d{4}\\s+[A-Z]{2,5}\\s+([A-Z]{2,5})"]},
-    {"key": "travelClass", "label": "Class", "patterns": ["\\d{2}-\\d{2}-\\d{4}[\\s\\S]{0,150}?\\b(3A|2A|1A|SL|CC|EC|FC|2S)\\b"]},
-    {"key": "coach", "label": "Coach", "patterns": ["\\b([A-Z]\\d{1,2})\\s*,\\s*\\d+"]},
-    {"key": "berth", "label": "Berth", "patterns": ["\\b[A-Z]\\d{1,2}\\s*,\\s*(\\d+)\\b"]},
-    {"key": "bookingStatus", "label": "Booking status", "patterns": ["\\b(CNF|RAC|WL ?\\d+)\\b"]},
-    {"key": "chartStatus", "label": "Chart status", "patterns": ["(Chart Prepared|Chart Not Prepared)"]},
-    {"key": "fromTime", "label": "Departure time", "patterns": []},
-    {"key": "toTime", "label": "Arrival time", "patterns": []},
-    {"key": "platform", "label": "Platform", "patterns": []},
-    {"key": "duration", "label": "Duration", "patterns": []},
-    {"key": "distance", "label": "Distance", "patterns": []}
+    {
+      "key": "trainNumber",
+      "label": "Train number",
+      "required": true,
+      "patterns": [
+        "TRAIN NAME\\s*:\\s*(\\d{5})",
+        "\\b(\\d{5})\\s+[A-Z][A-Za-z ]+?\\s+\\d{2}-\\d{2}-\\d{4}"
+      ]
+    },
+    {
+      "key": "trainName",
+      "label": "Train name",
+      "required": true,
+      "patterns": [
+        "TRAIN NAME\\s*:\\s*\\d{5}\\s*[\\u2012\\u2013\\u2014\\-]\\s*([^\\n\\r]+)",
+        "\\b\\d{5}\\s+([A-Z][A-Za-z ]+?)\\s+\\d{2}-\\d{2}-\\d{4}"
+      ]
+    },
+    {
+      "key": "journeyDate",
+      "label": "Journey date",
+      "required": true,
+      "patterns": [
+        "DAY OF BOARDING\\s+(\\d{2}-\\d{2}-\\d{4})",
+        "\\b\\d{5}\\s+[A-Z][A-Za-z ]+?\\s+(\\d{2}-\\d{2}-\\d{4})"
+      ]
+    },
+    {
+      "key": "fromStation",
+      "label": "From",
+      "patterns": [
+        "\\bFROM\\b\\s+([A-Z][A-Z ]+?)\\s*\\|",
+        "\\d{2}-\\d{2}-\\d{4}\\s+([A-Z]{2,5})\\s+[A-Z]{2,5}"
+      ]
+    },
+    {
+      "key": "toStation",
+      "label": "To",
+      "patterns": [
+        "\\bTO\\b\\s+([A-Z][A-Z ]+?)\\s*\\|",
+        "\\d{2}-\\d{2}-\\d{4}\\s+[A-Z]{2,5}\\s+([A-Z]{2,5})"
+      ]
+    },
+    {
+      "key": "travelClass",
+      "label": "Class",
+      "patterns": [
+        "CLASS\\s+([A-Z][A-Z0-9 ]*?)\\s*\\n",
+        "CLASS\\s+(AC\\s*\\d\\s*TIER|SLEEPER|SECOND\\s*SITTING|AC\\s*CHAIR\\s*CAR|FIRST\\s*CLASS)",
+        "\\d{2}-\\d{2}-\\d{4}[\\s\\S]{0,150}?\\b(3A|2A|1A|SL|CC|EC|FC|2S)\\b"
+      ]
+    },
+    {
+      "key": "coach",
+      "label": "Coach",
+      "patterns": [
+        "COACH/BERTH[\\s\\S]{0,200}?([A-Z]{1,3}\\d{0,2})\\/\\d+",
+        "\\b([A-Z]\\d{1,2})\\s*,\\s*\\d+"
+      ]
+    },
+    {
+      "key": "berth",
+      "label": "Berth",
+      "patterns": [
+        "COACH/BERTH[\\s\\S]{0,200}?[A-Z]{1,3}\\d{0,2}\\/(\\d+)",
+        "\\b[A-Z]\\d{1,2}\\s*,\\s*(\\d+)\\b"
+      ]
+    },
+    {
+      "key": "bookingStatus",
+      "label": "Booking status",
+      "patterns": [
+        "COACH/BERTH\\s+1\\.\\s+([A-Z]+)",
+        "\\b(CNF|RAC|WL ?\\d+)\\b"
+      ]
+    },
+    {
+      "key": "chartStatus",
+      "label": "Chart status",
+      "patterns": [
+        "(Chart Prepared|Chart Not Prepared)",
+        "CHART STATUS\\s+([A-Z ]+?)(?:\\s*\\n|$)"
+      ]
+    },
+    {
+      "key": "fromTime",
+      "label": "Departure time",
+      "patterns": [
+        "\\bFROM\\b[\\s\\S]{0,80}?\\|\\s*[A-Z]+\\s+(\\d{1,2}:\\d{2}\\s*[AP]M)"
+      ]
+    },
+    {
+      "key": "toTime",
+      "label": "Arrival time",
+      "patterns": [
+        "\\bTO\\b[\\s\\S]{0,80}?\\|\\s*[A-Z]+\\s+(\\d{1,2}:\\d{2}\\s*[AP]M)"
+      ]
+    },
+    {
+      "key": "platform",
+      "label": "Platform",
+      "patterns": [
+        "PF#\\s*\\(TENTATIVE\\)\\s+(\\d+)"
+      ]
+    },
+    {
+      "key": "duration",
+      "label": "Duration",
+      "patterns": [
+        "JOURNEY TIME\\s+(\\d+H\\s*\\d+M)"
+      ]
+    },
+    {
+      "key": "distance",
+      "label": "Distance",
+      "patterns": []
+    }
   ],
   "extra": {
     "coachOrders": {
-      "19489": ["LPR", "GEN", "GEN", "H1", "A1", "A2", "B1", "B2", "B3", "B4", "M1", "M2", "S1", "S2", "S3", "S4", "S5", "S6", "S7", "GEN", "GEN", "SLRD"]
+      "19489": [
+        "LPR",
+        "GEN",
+        "GEN",
+        "H1",
+        "A1",
+        "A2",
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "M1",
+        "M2",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "S6",
+        "S7",
+        "GEN",
+        "GEN",
+        "SLRD"
+      ]
     }
   }
 }
