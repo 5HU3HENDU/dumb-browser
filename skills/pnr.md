@@ -15,11 +15,15 @@ produced.
 - The PNR and trip belong only to the user who added them. Store on-device
   only; never send them to any server.
 - Never include other passengers' names or details.
-- Public sources only. Check official railway information first, then
-  reputable live PNR and train sources. IRCTC PNR lookup may require a
-  CAPTCHA; do not bypass or automate it. If the official PNR page is
-  CAPTCHA-gated, use a live PNR page such as RailYatri and cross-check other
-  fields with current reputable sources.
+- Public sources only. Three live PNR sources, checked 2026-10-28:
+  ConfirmTkt, ixigo, RailYatri. The official railway site is NOT a source:
+  it shows a CAPTCHA after submit, which automated checks must not bypass.
+  Trainman is dead (moved to Cleartrip) and Cleartrip demands a phone+OTP
+  login at the result page despite claiming otherwise — neither is usable.
+  When sources disagree, the value agreed by two sources wins (e.g. a
+  departure time or platform shown by two of the three); the in-app
+  "another source says" note for disagreements needs an app change and
+  lands in v1.1 — until then the majority value is shown silently.
 - Show the sources used and an "As of" timestamp in India Standard Time
   (IST) on every view.
 
@@ -51,13 +55,21 @@ Rules:
 
 ## Sources and steps (machine block)
 
-- Source A — official railway PNR enquiry: open the page, enter the PNR,
-  submit, wait for the result, read fields 1–6.
-- Source B — live PNR page (e.g. RailYatri): same steps. Use when Source A
-  is CAPTCHA-gated or incomplete; cross-check fields against Source A.
-- Source C — train running and coach sources: using the train number and
-  journey date from A/B, fetch live running status, platform numbers, and
-  coach order (fields 7–9).
+- Source A — ConfirmTkt PNR page: open the page, enter the PNR, submit,
+  wait for the result (its loading screen takes ~20 seconds), read fields
+  1–7. It also gives the quota.
+- Source B — ixigo PNR page (`/trains/pnr-status`; the plain `/pnr-status`
+  URL is a 404): same steps. It is the only source for the arrival
+  platform, the fare, and the coach-position diagram (class codes in order,
+  based on past data — typical, never the confirmed rake; its station
+  selector defaults to a station other than the boarding station, so the
+  diagram is shown as a typical sequence only until v1.1 adds station
+  selection and the mapped coach rail).
+- Source C — RailYatri PNR page: same steps. It is the only source for a
+  full DD-MM-YYYY journey date; the other two show "Wed, 11 Nov" style
+  dates with no year, so the date patterns deliberately match only the
+  full format. If RailYatri fails, the date shows "Not available" until
+  v1.1 adds proper cross-source voting.
 - Pin the exact page URLs and selectors at implementation time; pages
   change. When selectors fail, fall back to the SLM adapter (read the page
   and find the fields by meaning) rather than failing the skill.
@@ -90,7 +102,14 @@ field patterns, coach orders — changes the skill with no app update. The
 view template is `pnr.view.html` in this same folder.
 
 
-Live note (2026-10-28): the official site shows a CAPTCHA after submit, so automated extraction cannot use it; live data currently comes from RailYatri, whose layout the patterns above match.
+Live note (2026-10-28): all three sources verified live with a real PNR.
+Known disagreements on that trip — departure 05:30 (ConfirmTkt + ixigo) vs
+05:20 (RailYatri); boarding platform 6 (ConfirmTkt + RailYatri) vs 5
+(ixigo); duration 3h55m (ixigo) vs 4h10m (RailYatri, inconsistent with its
+own times). The pattern order implements the majority values for these
+cases: ConfirmTkt first for time/platform, ixigo for duration/arrival/fare/
+diagram, RailYatri for the full journey date. True vote-counting and the
+"another source says" disagreement note need a runner change — v1.1.
 
 ```skill-json
 {
@@ -107,9 +126,9 @@ Live note (2026-10-28): the official site shows a CAPTCHA after submit, so autom
   ],
   "sources": [
     {
-      "key": "official",
-      "name": "Indian Railways (official)",
-      "url": "https://www.indianrail.gov.in/enquiry/PNR/PnrEnquiry.html",
+      "key": "confirmtkt",
+      "name": "ConfirmTkt",
+      "url": "https://www.confirmtkt.com/pnr-status",
       "steps": [
         {
           "action": "fill",
@@ -121,7 +140,29 @@ Live note (2026-10-28): the official site shows a CAPTCHA after submit, so autom
         },
         {
           "action": "wait",
-          "delayMs": 6000
+          "delayMs": 22000
+        },
+        {
+          "action": "extract"
+        }
+      ]
+    },
+    {
+      "key": "ixigo",
+      "name": "ixigo",
+      "url": "https://www.ixigo.com/trains/pnr-status",
+      "steps": [
+        {
+          "action": "fill",
+          "label": "pnr",
+          "value": "{pnr}"
+        },
+        {
+          "action": "submit"
+        },
+        {
+          "action": "wait",
+          "delayMs": 12000
         },
         {
           "action": "extract"
@@ -157,6 +198,8 @@ Live note (2026-10-28): the official site shows a CAPTCHA after submit, so autom
       "label": "Train number",
       "required": true,
       "patterns": [
+        "\\b(\\d{5})\\s*-\\s*[A-Z]",
+        "\\b(\\d{5})\\s+[A-Z]",
         "TRAIN NAME\\s*:\\s*(\\d{5})",
         "\\b(\\d{5})\\s+[A-Z][A-Za-z ]+?\\s+\\d{2}-\\d{2}-\\d{4}"
       ]
@@ -166,6 +209,8 @@ Live note (2026-10-28): the official site shows a CAPTCHA after submit, so autom
       "label": "Train name",
       "required": true,
       "patterns": [
+        "\\b\\d{5}\\s*-\\s*([A-Z][A-Z ]+?)\\s*\\n",
+        "\\b\\d{5}\\s+([A-Za-z ]+?)\\s*\\n",
         "TRAIN NAME\\s*:\\s*\\d{5}\\s*[\\u2012\\u2013\\u2014\\-]\\s*([^\\n\\r]+)",
         "\\b\\d{5}\\s+([A-Z][A-Za-z ]+?)\\s+\\d{2}-\\d{2}-\\d{4}"
       ]
@@ -183,6 +228,8 @@ Live note (2026-10-28): the official site shows a CAPTCHA after submit, so autom
       "key": "fromStation",
       "label": "From",
       "patterns": [
+        "\\n([A-Za-z]+(?: [A-Za-z]+)*)\\s*-\\s*[A-Z]{2,},",
+        "\\n([A-Za-z ]+?)\\nExp\\. Platform No\\.",
         "\\bFROM\\b\\s+([A-Z][A-Z ]+?)\\s*\\|",
         "\\d{2}-\\d{2}-\\d{4}\\s+([A-Z]{2,5})\\s+[A-Z]{2,5}"
       ]
@@ -191,6 +238,8 @@ Live note (2026-10-28): the official site shows a CAPTCHA after submit, so autom
       "key": "toStation",
       "label": "To",
       "patterns": [
+        "[\\s\\S]*\\n([A-Za-z]+(?: [A-Za-z]+)*)\\s*-\\s*[A-Z]{2,},",
+        "[\\s\\S]*\\n([A-Za-z][A-Za-z ]*?)\\nExp\\. Platform No\\.",
         "\\bTO\\b\\s+([A-Z][A-Z ]+?)\\s*\\|",
         "\\d{2}-\\d{2}-\\d{4}\\s+[A-Z]{2,5}\\s+([A-Z]{2,5})"
       ]
@@ -199,6 +248,8 @@ Live note (2026-10-28): the official site shows a CAPTCHA after submit, so autom
       "key": "travelClass",
       "label": "Class",
       "patterns": [
+        "\\|\\s*(3A|2A|1A|SL|CC|EC|FC|2S)\\s*\\|",
+        "(\\d+A|SL|CC|EC)\\s*-\\s*(Third|Second|First)",
         "CLASS\\s+([A-Z][A-Z0-9 ]*?)\\s*\\n",
         "CLASS\\s+(AC\\s*\\d\\s*TIER|SLEEPER|SECOND\\s*SITTING|AC\\s*CHAIR\\s*CAR|FIRST\\s*CLASS)",
         "\\d{2}-\\d{2}-\\d{4}[\\s\\S]{0,150}?\\b(3A|2A|1A|SL|CC|EC|FC|2S)\\b"
@@ -208,6 +259,7 @@ Live note (2026-10-28): the official site shows a CAPTCHA after submit, so autom
       "key": "coach",
       "label": "Coach",
       "patterns": [
+        "CNF ([A-Z]{1,3}\\d{0,2}) \\d+ / Available",
         "COACH/BERTH[\\s\\S]{0,200}?([A-Z]{1,3}\\d{0,2})\\/\\d+",
         "\\b([A-Z]\\d{1,2})\\s*,\\s*\\d+"
       ]
@@ -216,6 +268,7 @@ Live note (2026-10-28): the official site shows a CAPTCHA after submit, so autom
       "key": "berth",
       "label": "Berth",
       "patterns": [
+        "CNF [A-Z]{1,3}\\d{0,2} (\\d+) / Available",
         "COACH/BERTH[\\s\\S]{0,200}?[A-Z]{1,3}\\d{0,2}\\/(\\d+)",
         "\\b[A-Z]\\d{1,2}\\s*,\\s*(\\d+)\\b"
       ]
@@ -224,6 +277,7 @@ Live note (2026-10-28): the official site shows a CAPTCHA after submit, so autom
       "key": "bookingStatus",
       "label": "Booking status",
       "patterns": [
+        "\\b(Confirmed|Waitlisted)\\b",
         "COACH/BERTH\\s+1\\.\\s+([A-Z]+)",
         "\\b(CNF|RAC|WL ?\\d+)\\b"
       ]
@@ -240,6 +294,8 @@ Live note (2026-10-28): the official site shows a CAPTCHA after submit, so autom
       "key": "fromTime",
       "label": "Departure time",
       "patterns": [
+        "-\\s*[A-Z]{2,},\\s*(\\d{1,2}:\\d{2})",
+        "(\\d{1,2}:\\d{2})\\s*\\n[A-Z]{2,}",
         "\\bFROM\\b[\\s\\S]{0,80}?\\|\\s*[A-Z]+\\s+(\\d{1,2}:\\d{2}\\s*[AP]M)"
       ]
     },
@@ -247,6 +303,8 @@ Live note (2026-10-28): the official site shows a CAPTCHA after submit, so autom
       "key": "toTime",
       "label": "Arrival time",
       "patterns": [
+        "[\\s\\S]*-\\s*[A-Z]{2,},\\s*(\\d{1,2}:\\d{2})",
+        "[\\s\\S]*(?<!\\d)(\\d{1,2}:\\d{2})\\s*\\n[A-Z]{2,}",
         "\\bTO\\b[\\s\\S]{0,80}?\\|\\s*[A-Z]+\\s+(\\d{1,2}:\\d{2}\\s*[AP]M)"
       ]
     },
@@ -254,6 +312,8 @@ Live note (2026-10-28): the official site shows a CAPTCHA after submit, so autom
       "key": "platform",
       "label": "Platform",
       "patterns": [
+        "Expected platform:\\s*(\\d+)",
+        "Exp\\. Platform No\\. (\\d+)",
         "PF#\\s*\\(TENTATIVE\\)\\s+(\\d+)"
       ]
     },
@@ -261,6 +321,7 @@ Live note (2026-10-28): the official site shows a CAPTCHA after submit, so autom
       "key": "duration",
       "label": "Duration",
       "patterns": [
+        "Exp\\. Platform No\\. \\d+[\\s\\S]{0,80}?(\\d+h\\s*\\d+m)",
         "JOURNEY TIME\\s+(\\d+H\\s*\\d+M)"
       ]
     },
@@ -268,6 +329,34 @@ Live note (2026-10-28): the official site shows a CAPTCHA after submit, so autom
       "key": "distance",
       "label": "Distance",
       "patterns": []
+    },
+    {
+      "key": "arrivalPlatform",
+      "label": "Arrival platform",
+      "patterns": [
+        "[\\s\\S]*Exp\\. Platform No\\. (\\d+)"
+      ]
+    },
+    {
+      "key": "fare",
+      "label": "Fare",
+      "patterns": [
+        "Ticket Fare:\\s*(₹[\\d,]+)"
+      ]
+    },
+    {
+      "key": "coachDiagram",
+      "label": "Coach position (typical)",
+      "patterns": [
+        "Click on coach to view seat layout\\s+Scroll Up\\s+([\\s\\S]+?)\\s+Scroll Down"
+      ]
+    },
+    {
+      "key": "coachCount",
+      "label": "Coach count",
+      "patterns": [
+        "(\\d+) Coaches"
+      ]
     }
   ],
   "extra": {

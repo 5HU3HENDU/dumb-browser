@@ -19,6 +19,7 @@ body{margin:0;background:#FBF8F0;color:#141310;font-family:Georgia,serif;padding
 .footer{font-family:sans-serif;font-size:13px;color:#6b665a;line-height:1.7}
 .footer a{color:#0f766e}
 .note{font-family:sans-serif;font-size:13px;color:#6b665a}
+.diagram{font-family:sans-serif;font-size:13px;line-height:1.7;white-space:pre-line}
 </style></head><body>
 <div class="grid"><div>
 <div class="card"><div class="kicker">From &middot; Boarding</div>
@@ -31,6 +32,7 @@ body{margin:0;background:#FBF8F0;color:#141310;font-family:Georgia,serif;padding
 <div class="meta">Class: {{travelClass}}</div>
 <div class="seat" style="margin-top:8px">{{coach}} {{berth}} &middot; {{bookingStatus}}</div>
 <div class="meta">Chart: {{chartStatus}}</div>
+<div class="meta">Fare: {{fare}}</div>
 <div style="margin-top:10px"><span class="kicker">Platform</span><br>
 <span class="platform">{{platform}}</span>
 <span class="note"> &mdash; check at station</span></div>
@@ -38,7 +40,8 @@ body{margin:0;background:#FBF8F0;color:#141310;font-family:Georgia,serif;padding
 
 <div class="card" style="margin-top:14px"><div class="kicker">To &middot; Arrival</div>
 <div class="station">{{toStation}}</div>
-<div class="time">{{toTime}}</div></div>
+<div class="time">{{toTime}}</div>
+<div class="meta">Platform: {{arrivalPlatform}} (expected)</div></div>
 </div>
 
 <div>
@@ -49,6 +52,9 @@ body{margin:0;background:#FBF8F0;color:#141310;font-family:Georgia,serif;padding
 {{#each coaches}}<span class="chip {{#if active}}gold{{/if}}">{{code}} <b>{{position}}</b></span>{{/each}}
 </div></div>
 {{/if}}
+<div class="card" style="margin-top:14px"><div class="kicker">Coach position &mdash; typical</div>
+<div class="note" style="margin-top:6px">{{coachCount}} coaches, based on past data — may vary, not the confirmed rake. Check at station.</div>
+<div class="diagram" style="margin-top:10px">{{coachDiagram}}</div></div>
 </div></div>
 
 {{#if partial}}
