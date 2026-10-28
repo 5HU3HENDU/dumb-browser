@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PNR view — sample</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #eceae6; color: #141310; font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .phone { max-width: 430px; margin: 0 auto; background: #f6f6f4; min-height: 100vh; padding: 12px 14px 28px; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 6px 2px 12px; }
+  .appname { font-weight: 700; font-size: 15px; }
+  .sampletag { font-size: 11px; font-weight: 700; letter-spacing: .08em; background: #141310; color: #fff; padding: 4px 8px; border-radius: 999px; }
+  h1 { font-size: 22px; margin: 0; }
+  .sub { color: #666; font-size: 13px; margin-top: 4px; }
+  .card { background: #fff; border: 1px solid #e3e0da; border-radius: 14px; padding: 14px; margin-top: 12px; }
+  .card h2 { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #777; margin: 0 0 10px; }
+  .badge { display: inline-block; background: #1a7f37; color: #fff; font-weight: 700; font-size: 12px; padding: 3px 9px; border-radius: 999px; vertical-align: 3px; }
+  .route { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+  .stn { flex: 1; }
+  .stn .code { font-size: 20px; font-weight: 800; }
+  .stn .name { font-size: 12px; color: #666; }
+  .stn.right { text-align: right; }
+  .arrow { color: #999; font-size: 18px; }
+  .times { display: flex; justify-content: space-between; margin-top: 10px; font-size: 15px; font-weight: 600; }
+  .times span { color: #777; font-size: 12px; font-weight: 400; display: block; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+  .field span { display: block; font-size: 12px; color: #777; }
+  .field b { font-size: 15px; }
+  .proj { color: #8a6d00; font-size: 12px; font-weight: 600; }
+  .seats { display: flex; gap: 8px; margin-top: 10px; }
+  .seat { flex: 1; border: 1px solid #e3e0da; border-radius: 10px; padding: 10px; text-align: center; }
+  .seat b { font-size: 18px; display: block; }
+  .seat span { font-size: 12px; color: #1a7f37; font-weight: 700; }
+  .coaches { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .coach { min-width: 38px; text-align: center; font-size: 12px; font-weight: 600; padding: 6px 0; border: 1px solid #e3e0da; border-radius: 8px; background: #faf9f7; }
+  .coach.you { background: #141310; color: #fff; border-color: #141310; }
+  .note { font-size: 12px; color: #777; margin-top: 10px; line-height: 1.5; }
+  .muted { color: #888; font-size: 13px; }
+  .refresh { width: 100%; margin-top: 14px; padding: 12px; border: 0; border-radius: 12px; background: #141310; color: #fff; font-size: 15px; font-weight: 600; }
+  .src { font-size: 12px; color: #888; margin-top: 14px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="topbar"><div class="appname">Dumb Browser</div><div class="sampletag">SAMPLE</div></div>
+  <h1>PNR 8752640193 <span class="badge">CNF</span></h1>
+  <div class="sub">As of 23 Oct 2026, 01:58 IST · Sample data only</div>
+
+  <div class="card">
+    <h2>Journey</h2>
+    <div style="font-weight:700;">19489 · Ahmedabad – Gorakhpur Express</div>
+    <div class="route">
+      <div class="stn"><div class="code">ADI</div><div class="name">Ahmedabad Jn</div></div>
+      <div class="arrow">→</div>
+      <div class="stn right"><div class="code">BSB</div><div class="name">Varanasi Jn</div></div>
+    </div>
+    <div class="times">
+      <div><span>Departure · 24 Oct 2026</span>09:10</div>
+      <div style="text-align:right;"><span>Arrival · 25 Oct 2026</span>12:20</div>
+    </div>
+    <div class="grid">
+      <div class="field"><span>Duration</span><b>27h 10m</b></div>
+      <div class="field"><span>Class</span><b>3A · AC 3 Tier</b></div>
+      <div class="field"><span>Distance</span><b>Not available</b></div>
+      <div class="field"><span>Journey date</span><b>24 Oct 2026</b></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Your seat</h2>
+    <div>Coach <b>B3</b></div>
+    <div class="seats">
+      <div class="seat"><b>23</b><span>CNF</span></div>
+      <div class="seat"><b>24</b><span>CNF</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Coach position</h2>
+    <div>B3 is <b>9th of 22</b> coaches, engine to rear</div>
+    <div class="coaches">
+      <div class="coach">LPR</div><div class="coach">GEN</div><div class="coach">GEN</div><div class="coach">H1</div><div class="coach">A1</div><div class="coach">A2</div><div class="coach">B1</div><div class="coach">B2</div><div class="coach you">B3</div><div class="coach">B4</div><div class="coach">M1</div><div class="coach">M2</div><div class="coach">S1</div><div class="coach">S2</div><div class="coach">S3</div><div class="coach">S4</div><div class="coach">S5</div><div class="coach">S6</div><div class="coach">S7</div><div class="coach">GEN</div><div class="coach">GEN</div><div class="coach">SLRD</div>
+    </div>
+    <div class="note">Typical composition for this train — not confirmed as the actual rake for this journey.</div>
+  </div>
+
+  <div class="card">
+    <h2>Platforms</h2>
+    <div class="grid" style="margin-top:0;">
+      <div class="field"><span>Boarding · Ahmedabad Jn</span><b>8</b> <span class="proj">projected</span></div>
+      <div class="field"><span>Arrival · Varanasi Jn</span><b>3</b> <span class="proj">projected</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Live status</h2>
+    <div class="muted">Live running status appears here on the journey day.</div>
+  </div>
+
+  <button class="refresh">Refresh</button>
+  <div class="src">Sources: official railway information + live PNR sources. Sample data from the worked example — not a live lookup.</div>
+</div>
+</body>
+</html>
