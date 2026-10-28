@@ -200,7 +200,7 @@ diagram, RailYatri for the full journey date. True vote-counting and the
       "patterns": [
         "\\b(\\d{5})\\s*-\\s*[A-Z]",
         "\\b(\\d{5})\\s+[A-Z]",
-        "TRAIN NAME\\s*:\\s*(\\d{5})",
+        "TRAIN NAME\\s*[:/]\\s*(\\d{5})",
         "\\b(\\d{5})\\s+[A-Z][A-Za-z ]+?\\s+\\d{2}-\\d{2}-\\d{4}"
       ]
     },
@@ -209,9 +209,9 @@ diagram, RailYatri for the full journey date. True vote-counting and the
       "label": "Train name",
       "required": true,
       "patterns": [
-        "\\b\\d{5}\\s*-\\s*([A-Z][A-Z ]+?)\\s*\\n",
-        "\\b\\d{5}\\s+([A-Za-z ]+?)\\s*\\n",
-        "TRAIN NAME\\s*:\\s*\\d{5}\\s*[\\u2012\\u2013\\u2014\\-]\\s*([^\\n\\r]+)",
+        "\\b\\d{5}\\s*-\\s*([A-Z]+(?: [A-Z]+)*)",
+        "\\b\\d{5}\\s+([A-Za-z]+(?: [A-Za-z]+)*)",
+        "TRAIN NAME\\s*[:/]\\s*\\d{5}\\s*[\\u2012\\u2013\\u2014\\-]\\s*([A-Za-z]+(?: [A-Za-z]+)*?)(?:\\s+FROM\\b|\\s*\\n|$)",
         "\\b\\d{5}\\s+([A-Z][A-Za-z ]+?)\\s+\\d{2}-\\d{2}-\\d{4}"
       ]
     },
@@ -220,7 +220,7 @@ diagram, RailYatri for the full journey date. True vote-counting and the
       "label": "Journey date",
       "required": true,
       "patterns": [
-        "DAY OF BOARDING\\s+(\\d{2}-\\d{2}-\\d{4})",
+        "DAY OF BOARDING\\s*/?\\s*(\\d{2}-\\d{2}-\\d{4})",
         "\\b\\d{5}\\s+[A-Z][A-Za-z ]+?\\s+(\\d{2}-\\d{2}-\\d{4})"
       ]
     },
@@ -228,9 +228,9 @@ diagram, RailYatri for the full journey date. True vote-counting and the
       "key": "fromStation",
       "label": "From",
       "patterns": [
-        "\\n([A-Za-z]+(?: [A-Za-z]+)*)\\s*-\\s*[A-Z]{2,},",
-        "\\n([A-Za-z ]+?)\\nExp\\. Platform No\\.",
-        "\\bFROM\\b\\s+([A-Z][A-Z ]+?)\\s*\\|",
+        "\\b([A-Za-z]+(?: [A-Za-z]+)*)\\s*-\\s*(?-i:[A-Z]{2,}),",
+        "(?-i:[A-Z]{2,5})\\s+([A-Za-z]+(?: [A-Za-z]+)*)\\s+Exp\\.?\\s*Platform\\s*No\\.?\\s*\\d+",
+        "\\bFROM\\b\\s*[:/]?\\s*([A-Z][A-Z ]+?)\\s*\\|",
         "\\d{2}-\\d{2}-\\d{4}\\s+([A-Z]{2,5})\\s+[A-Z]{2,5}"
       ]
     },
@@ -238,9 +238,9 @@ diagram, RailYatri for the full journey date. True vote-counting and the
       "key": "toStation",
       "label": "To",
       "patterns": [
-        "[\\s\\S]*\\n([A-Za-z]+(?: [A-Za-z]+)*)\\s*-\\s*[A-Z]{2,},",
-        "[\\s\\S]*\\n([A-Za-z][A-Za-z ]*?)\\nExp\\. Platform No\\.",
-        "\\bTO\\b\\s+([A-Z][A-Z ]+?)\\s*\\|",
+        "[\\s\\S]*\\b([A-Za-z]+(?: [A-Za-z]+)*)\\s*-\\s*(?-i:[A-Z]{2,}),",
+        "[\\s\\S]*(?-i:[A-Z]{2,5})\\s+([A-Za-z]+(?: [A-Za-z]+)*)\\s+Exp\\.?\\s*Platform\\s*No\\.?\\s*\\d+",
+        "\\bTO\\b\\s*[:/]?\\s*([A-Z][A-Z ]+?)\\s*\\|",
         "\\d{2}-\\d{2}-\\d{4}\\s+[A-Z]{2,5}\\s+([A-Z]{2,5})"
       ]
     },
@@ -250,8 +250,8 @@ diagram, RailYatri for the full journey date. True vote-counting and the
       "patterns": [
         "\\|\\s*(3A|2A|1A|SL|CC|EC|FC|2S)\\s*\\|",
         "(\\d+A|SL|CC|EC)\\s*-\\s*(Third|Second|First)",
-        "CLASS\\s+([A-Z][A-Z0-9 ]*?)\\s*\\n",
-        "CLASS\\s+(AC\\s*\\d\\s*TIER|SLEEPER|SECOND\\s*SITTING|AC\\s*CHAIR\\s*CAR|FIRST\\s*CLASS)",
+        "CLASS\\s*/?\\s+([A-Z][A-Z0-9 ]*?)\\s*\\n",
+        "CLASS\\s*/?\\s+(AC\\s*\\d\\s*TIER|SLEEPER|SECOND\\s*SITTING|AC\\s*CHAIR\\s*CAR|FIRST\\s*CLASS)",
         "\\d{2}-\\d{2}-\\d{4}[\\s\\S]{0,150}?\\b(3A|2A|1A|SL|CC|EC|FC|2S)\\b"
       ]
     },
@@ -277,9 +277,9 @@ diagram, RailYatri for the full journey date. True vote-counting and the
       "key": "bookingStatus",
       "label": "Booking status",
       "patterns": [
-        "\\b(Confirmed|Waitlisted)\\b",
         "COACH/BERTH\\s+1\\.\\s+([A-Z]+)",
-        "\\b(CNF|RAC|WL ?\\d+)\\b"
+        "\\b(CNF|RAC|WL ?\\d+)\\b",
+        "\\b(Confirmed|Waitlisted)\\b"
       ]
     },
     {
@@ -287,7 +287,7 @@ diagram, RailYatri for the full journey date. True vote-counting and the
       "label": "Chart status",
       "patterns": [
         "(Chart Prepared|Chart Not Prepared)",
-        "CHART STATUS\\s+([A-Z ]+?)(?:\\s*\\n|$)"
+        "CHART STATUS\\s*/?\\s*((?:NOT )?PREPARED)"
       ]
     },
     {
@@ -295,8 +295,8 @@ diagram, RailYatri for the full journey date. True vote-counting and the
       "label": "Departure time",
       "patterns": [
         "-\\s*[A-Z]{2,},\\s*(\\d{1,2}:\\d{2})",
-        "(\\d{1,2}:\\d{2})\\s*\\n[A-Z]{2,}",
-        "\\bFROM\\b[\\s\\S]{0,80}?\\|\\s*[A-Z]+\\s+(\\d{1,2}:\\d{2}\\s*[AP]M)"
+        "(?<!\\d)(\\d{1,2}:\\d{2})\\s+(?![AP]M\\b)[A-Z]{2,}",
+        "\\bFROM\\b[\\s\\S]{0,120}?\\|\\s*[A-Z]+\\s+(\\d{1,2}:\\d{2}\\s*[AP]M)"
       ]
     },
     {
@@ -304,25 +304,25 @@ diagram, RailYatri for the full journey date. True vote-counting and the
       "label": "Arrival time",
       "patterns": [
         "[\\s\\S]*-\\s*[A-Z]{2,},\\s*(\\d{1,2}:\\d{2})",
-        "[\\s\\S]*(?<!\\d)(\\d{1,2}:\\d{2})\\s*\\n[A-Z]{2,}",
-        "\\bTO\\b[\\s\\S]{0,80}?\\|\\s*[A-Z]+\\s+(\\d{1,2}:\\d{2}\\s*[AP]M)"
+        "[\\s\\S]*(?<!\\d)(\\d{1,2}:\\d{2})\\s+(?![AP]M\\b)[A-Z]{2,}",
+        "\\bTO\\b[\\s\\S]{0,120}?\\|\\s*[A-Z]+\\s+(\\d{1,2}:\\d{2}\\s*[AP]M)"
       ]
     },
     {
       "key": "platform",
       "label": "Platform",
       "patterns": [
-        "Expected platform:\\s*(\\d+)",
-        "Exp\\. Platform No\\. (\\d+)",
-        "PF#\\s*\\(TENTATIVE\\)\\s+(\\d+)"
+        "Expected platform\\s*:?\\s*(\\d+)",
+        "Exp\\.?\\s*Platform\\s*No\\.?\\s*(\\d+)",
+        "PF#\\s*\\(TENTATIVE\\)\\s*/?\\s*(\\d+)"
       ]
     },
     {
       "key": "duration",
       "label": "Duration",
       "patterns": [
-        "Exp\\. Platform No\\. \\d+[\\s\\S]{0,80}?(\\d+h\\s*\\d+m)",
-        "JOURNEY TIME\\s+(\\d+H\\s*\\d+M)"
+        "Exp\\.?\\s*Platform\\s*No\\.?\\s*\\d+[\\s\\S]{0,80}?(\\d+h\\s*\\d+m)",
+        "JOURNEY TIME\\s*/?\\s*(\\d+H\\s*\\d+M)"
       ]
     },
     {
@@ -334,13 +334,14 @@ diagram, RailYatri for the full journey date. True vote-counting and the
       "key": "arrivalPlatform",
       "label": "Arrival platform",
       "patterns": [
-        "[\\s\\S]*Exp\\. Platform No\\. (\\d+)"
+        "[\\s\\S]*Exp\\.?\\s*Platform\\s*No\\.?\\s*(\\d+)"
       ]
     },
     {
       "key": "fare",
       "label": "Fare",
       "patterns": [
+        "(₹\\s*[\\d,]+)",
         "Ticket Fare:\\s*(₹[\\d,]+)"
       ]
     },
