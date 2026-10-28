@@ -312,7 +312,7 @@ diagram, RailYatri for the full journey date. True vote-counting and the
       "key": "platform",
       "label": "Platform",
       "patterns": [
-        "Expected platform\\s*:?\\s*(\\d+)",
+        "Expected platform\\s*:?\\s*(?:No\\.?\\s*)?(\\d+)",
         "Exp\\.?\\s*Platform\\s*No\\.?\\s*(\\d+)",
         "PF#\\s*\\(TENTATIVE\\)\\s*/?\\s*(\\d+)"
       ]
