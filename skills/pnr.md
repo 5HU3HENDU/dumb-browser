@@ -61,9 +61,11 @@ Rules:
 - Pin the exact page URLs and selectors at implementation time; pages
   change. When selectors fail, fall back to the SLM adapter (read the page
   and find the fields by meaning) rather than failing the skill.
-- View: render the fields natively as one screen (see
-  `../preview/pnr-view.html` for the sample layout). The in-app view is the
-  output.
+- View: render the fields natively as one screen — journey cards (boarding,
+  journey details with platform and seat boxes, arrival), a numbered coach
+  rail with the traveller's coach highlighted, a live-status strip, and a
+  footer with the PNR, the As-of time, and the check-at-station note. The
+  in-app view is the output.
 
 ## Refresh and follow-up
 
@@ -78,5 +80,5 @@ Rules:
 
 ## Worked example
 
-Sample PNR 8752640193, train 19489 — see `../preview/pnr-view.html` for the
-rendered view. Example only; never hardcode its values.
+Sample PNR 8752640193, train 19489 (Ahmedabad – Gorakhpur Express, coach B3,
+berths 23–24 CNF). Example only; never hardcode its values.
