@@ -1346,10 +1346,13 @@ public class BrowserActivity extends AppCompatActivity implements BrowserControl
             } else if (resId == R.drawable.icon_settings) {
                 Intent settings = new Intent(BrowserActivity.this, Settings_Activity.class);
                 startActivity(settings);
+            } else if (resId == R.drawable.icon_skills) {
+                Intent skills = new Intent(BrowserActivity.this, SkillsActivity.class);
+                startActivity(skills);
             } else if (resId == R.drawable.icon_restart) {
                 triggerRebirth(context);
             } else if (resId == R.drawable.icon_help) {
-                Uri webpage = Uri.parse("https://codeberg.org/Gaukler_Faun/FOSS_Browser/wiki/Home");
+                Uri webpage = Uri.parse("https://github.com/5HU3HENDU/dumb-browser");
                 BrowserUnit.intentURL(this, webpage);
             } else if (resId == R.drawable.icon_delete) {
                 Snackbar snackbarSearch = Snackbar.make(view, R.string.hint_database, Snackbar.LENGTH_SHORT);

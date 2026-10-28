@@ -332,6 +332,7 @@ public class HelperUnit {
             list.add(new MenuItem(context.getString(R.string.menu_shareOpenWith), R.drawable.icon_share_open_with, true));
             list.add(new MenuItem(context.getString(R.string.menu_sc), R.drawable.icon_home, true));
             list.add(new MenuItem(context.getString(R.string.menu_download), R.drawable.icon_download, true));
+            list.add(new MenuItem(context.getString(R.string.menu_skills), R.drawable.icon_skills, true));
             list.add(new MenuItem(context.getString(R.string.setting_label), R.drawable.icon_settings, true));
             list.add(new MenuItem(context.getString(R.string.menu_restart), R.drawable.icon_restart, true));
             list.add(new MenuItem(context.getString(R.string.menu_quit), R.drawable.icon_close, true));

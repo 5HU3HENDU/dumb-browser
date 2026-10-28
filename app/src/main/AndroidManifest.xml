@@ -134,6 +134,8 @@
           da sie nur App-intern aufgerufen werden und sonst ein Sicherheitsrisiko darstellen!
         -->
         <activity android:name="com.schoolofadults.dumbbrowser.activity.Settings_Activity" android:label="@string/setting_title_browser" android:exported="false" />
+        <activity android:name="com.schoolofadults.dumbbrowser.activity.SkillsActivity" android:label="@string/menu_skills" android:exported="false" />
+        <activity android:name="com.schoolofadults.dumbbrowser.activity.SkillRunActivity" android:label="@string/menu_skills" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name="com.schoolofadults.dumbbrowser.activity.Settings_ProfileList" android:label="@string/setting_title_savedWebSites" android:exported="false" />
         <activity android:name="com.schoolofadults.dumbbrowser.activity.Settings_Backup" android:label="@string/setting_title_data" android:exported="false" />
         <activity android:name="com.schoolofadults.dumbbrowser.activity.Settings_Gesture" android:label="@string/setting_gestures" android:exported="false" />

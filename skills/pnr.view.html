@@ -1,0 +1,64 @@
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{margin:0;background:#FBF8F0;color:#141310;font-family:Georgia,serif;padding:16px}
+.grid{display:grid;gap:14px}
+@media(min-width:700px){.grid{grid-template-columns:1fr 260px}}
+.card{background:#fff;border:1px solid #e3dccb;border-radius:12px;padding:16px}
+.kicker{font-family:sans-serif;font-size:11px;letter-spacing:.12em;color:#8a8371;text-transform:uppercase}
+.station{font-size:34px;font-weight:bold;line-height:1.1}
+.time{font-size:28px;color:#0f766e;font-weight:bold}
+.meta{font-family:sans-serif;font-size:14px;color:#4a463c;line-height:1.6}
+.seat{font-size:22px;font-weight:bold}
+.platform{font-size:20px;font-weight:bold}
+.rail{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font-family:sans-serif;font-size:13px;border:1px solid #d8d0bc;border-radius:999px;padding:5px 9px;background:#fff}
+.chip b{font-size:11px;color:#8a8371}
+.chip.gold{background:#f5c542;border-color:#d9a514;color:#141310}
+.engine{background:#141310;color:#fff;border-color:#141310}
+.banner{background:#fff7d6;border:1px solid #e8c95a;border-radius:10px;padding:12px;font-family:sans-serif;font-size:14px}
+.footer{font-family:sans-serif;font-size:13px;color:#6b665a;line-height:1.7}
+.footer a{color:#0f766e}
+.note{font-family:sans-serif;font-size:13px;color:#6b665a}
+</style></head><body>
+<div class="grid"><div>
+<div class="card"><div class="kicker">From &middot; Boarding</div>
+<div class="station">{{fromStation}}</div>
+<div class="time">{{fromTime}}</div>
+<div class="meta">Journey date: {{journeyDate}}</div></div>
+
+<div class="card" style="margin-top:14px"><div class="kicker">Journey details</div>
+<div class="meta">{{trainNumber}} &middot; {{trainName}}</div>
+<div class="meta">Class: {{travelClass}}</div>
+<div class="seat" style="margin-top:8px">{{coach}} {{berth}} &middot; {{bookingStatus}}</div>
+<div class="meta">Chart: {{chartStatus}}</div>
+<div style="margin-top:10px"><span class="kicker">Platform</span><br>
+<span class="platform">{{platform}}</span>
+<span class="note"> &mdash; check at station</span></div>
+<div class="meta" style="margin-top:8px">Duration: {{duration}} &middot; Distance: {{distance}}</div></div>
+
+<div class="card" style="margin-top:14px"><div class="kicker">To &middot; Arrival</div>
+<div class="station">{{toStation}}</div>
+<div class="time">{{toTime}}</div></div>
+</div>
+
+<div>
+{{#if coaches}}
+<div class="card"><div class="kicker">Coach order &mdash; engine to rear</div>
+<div class="note" style="margin-top:6px">Typical order for this train, not the confirmed rake. Check at station.</div>
+<div class="rail"><span class="chip engine">Engine</span>
+{{#each coaches}}<span class="chip {{#if active}}gold{{/if}}">{{code}} <b>{{position}}</b></span>{{/each}}
+</div></div>
+{{/if}}
+</div></div>
+
+{{#if partial}}
+<div class="banner" style="margin-top:14px">Some details couldn&rsquo;t be confirmed from the sources, so they show as &ldquo;Not available&rdquo;. The source pages are linked below &mdash; open them to see the full status directly.</div>
+{{/if}}
+
+<div class="footer" style="margin-top:14px">
+PNR {{pnr}} &middot; As of {{asOf}}<br>
+Platform and coach position can change, check at station.<br>
+Sources:
+{{#each sourceLinks}}<a href="{{url}}">{{name}}</a> &nbsp;{{/each}}
+</div>
+</body></html>
